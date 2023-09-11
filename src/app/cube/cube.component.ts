@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as THREE from 'three';
 
@@ -13,7 +19,7 @@ export class CubeComponent implements AfterViewInit {
   @ViewChild('canvas') private canvasRef!: ElementRef;
 
   /** Cube Properties */
-  @Input() rotationSpeedX: number = 0.05;
+  @Input() rotationSpeedX: number = 0.001;
   @Input() rotationSpeedY: number = 0.01;
   @Input() size: number = 200;
   @Input() texture: string = '/assets/texture.jpg';
@@ -94,7 +100,7 @@ export class CubeComponent implements AfterViewInit {
       requestAnimationFrame(render);
       component.animateCube();
       component.renderer.render(component.scene, component.camera);
-    });
+    })();
   }
 
   ngAfterViewInit() {
