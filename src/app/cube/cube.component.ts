@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as THREE from 'three';
 
@@ -9,7 +9,7 @@ import * as THREE from 'three';
   templateUrl: './cube.component.html',
   styleUrls: ['./cube.component.scss'],
 })
-export class CubeComponent {
+export class CubeComponent implements AfterViewInit {
   @ViewChild('canvas') private canvasRef!: ElementRef;
 
   /** Cube Properties */
