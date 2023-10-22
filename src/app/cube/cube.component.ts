@@ -1,78 +1,56 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  Input,
-  ViewChild,
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import * as THREE from 'three';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import * as THREE from "three";
 
 @Component({
   selector: 'app-cube',
-  standalone: true,
-  imports: [CommonModule],
   templateUrl: './cube.component.html',
-  styleUrls: ['./cube.component.scss'],
+  styleUrls: ['./cube.component.scss']
 })
-export class CubeComponent implements AfterViewInit {
-  @ViewChild('canvas') private canvasRef!: ElementRef;
+export class CubeComponent implements OnInit, AfterViewInit {
 
-  /** Cube Properties */
-  @Input() rotationSpeedX: number = 0.001;
-  @Input() rotationSpeedY: number = 0.01;
-  @Input() size: number = 200;
-  @Input() texture: string = '/assets/texture.jpg';
+  @ViewChild('canvas')
+  private canvasRef!: ElementRef;
 
-  /** Stage Properties */
-  @Input() cameraZ: number = 400;
-  @Input() fieldOfView: number = 1;
-  @Input('nearClipping') nearClippingPlane: number = 1;
-  @Input('farClipping') farClippingPlane: number = 1000;
+  //* Cube Properties
 
-  /** Helper Properties (Private) */
+  @Input() public rotationSpeedX: number = 0.05;
+
+  @Input() public rotationSpeedY: number = 0.01;
+
+  @Input() public size: number = 200;
+
+  @Input() public texture: string = "/assets/texture.jpg";
+
+
+  //* Stage Properties
+
+  @Input() public cameraZ: number = 400;
+
+  @Input() public fieldOfView: number = 1;
+
+  @Input('nearClipping') public nearClippingPlane: number = 1;
+
+  @Input('farClipping') public farClippingPlane: number = 1000;
+
+  //? Helper Properties (Private Properties);
+
   private camera!: THREE.PerspectiveCamera;
+
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
   }
   private loader = new THREE.TextureLoader();
   private geometry = new THREE.BoxGeometry(1, 1, 1);
-  private material = new THREE.MeshBasicMaterial({
-    map: this.loader.load(this.texture),
-  });
+  private material = new THREE.MeshBasicMaterial({ map: this.loader.load(this.texture) });
+
   private cube: THREE.Mesh = new THREE.Mesh(this.geometry, this.material);
+
   private renderer!: THREE.WebGLRenderer;
+
   private scene!: THREE.Scene;
 
   /**
-   * Create the scene
-   *
-   * @private
-   * @memberof CubeComponent
-   */
-  private createScene() {
-    /** Scene */
-    this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x000000);
-    this.scene.add(this.cube);
-
-    /** Camera */
-    const aspectRatio = this.getAspectRatio();
-    this.camera = new THREE.PerspectiveCamera(
-      this.fieldOfView,
-      aspectRatio,
-      this.nearClippingPlane,
-      this.farClippingPlane
-    );
-    this.camera.position.z = this.cameraZ;
-  }
-
-  private getAspectRatio() {
-    return this.canvas.clientWidth / this.canvas.clientHeight;
-  }
-
-  /**
-   * Animate the cube
+   *Animate the cube
    *
    * @private
    * @memberof CubeComponent
@@ -83,28 +61,61 @@ export class CubeComponent implements AfterViewInit {
   }
 
   /**
-   * Start the rendering loop
+   * Create the scene
    *
    * @private
    * @memberof CubeComponent
    */
+  private createScene() {
+    //* Scene
+    this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(0x000000)
+    this.scene.add(this.cube);
+    //*Camera
+    let aspectRatio = this.getAspectRatio();
+    this.camera = new THREE.PerspectiveCamera(
+      this.fieldOfView,
+      aspectRatio,
+      this.nearClippingPlane,
+      this.farClippingPlane
+    )
+    this.camera.position.z = this.cameraZ;
+  }
 
+  private getAspectRatio() {
+    return this.canvas.clientWidth / this.canvas.clientHeight;
+  }
+
+  /**
+ * Start the rendering loop
+ *
+ * @private
+ * @memberof CubeComponent
+ */
   private startRenderingLoop() {
-    /** Renderer */
+    //* Renderer
+    // Use canvas element in template
     this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
     this.renderer.setPixelRatio(devicePixelRatio);
     this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
 
-    const component: CubeComponent = this;
+    let component: CubeComponent = this;
     (function render() {
       requestAnimationFrame(render);
       component.animateCube();
       component.renderer.render(component.scene, component.camera);
-    })();
+    }());
+  }
+
+  constructor() { }
+
+  ngOnInit(): void {
+
   }
 
   ngAfterViewInit() {
     this.createScene();
     this.startRenderingLoop();
   }
+
 }

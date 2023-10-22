@@ -3,12 +3,9 @@ import * as THREE from "three";
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-model',
-  standalone: true,
-  imports: [CommonModule],
   templateUrl: './model.component.html',
   styleUrls: ['./model.component.scss']
 })
@@ -116,7 +113,7 @@ export class ModelComponent implements OnInit, AfterViewInit {
     this.camera.position.x = 100;
     this.camera.position.y = 100;
     this.camera.position.z = 100;
-    this.ambientLight = new THREE.AmbientLight(0x00000, 100);
+    this.ambientLight = new THREE.AmbientLight(0x000011, 100);
     this.scene.add(this.ambientLight);
     this.directionalLight = new THREE.DirectionalLight(0xffdf04, 0.4);
     this.directionalLight.position.set(0, 1, 0);
@@ -155,7 +152,7 @@ export class ModelComponent implements OnInit, AfterViewInit {
     let component: ModelComponent = this;
     (function render() {
       component.renderer.render(component.scene, component.camera);
-      component.animateModel();
+      // component.animateModel();
       requestAnimationFrame(render);
     }());
   }

@@ -7,9 +7,16 @@ import { CubeComponent } from './cube/cube.component';
 import { ModelComponent } from './model/model.component';
 
 @NgModule({
-  declarations: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, CubeComponent, ModelComponent],
+  declarations: [
+    AppComponent,
+    CubeComponent,
+    ModelComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule
+  ],
   providers: [],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
