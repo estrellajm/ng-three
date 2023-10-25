@@ -12,55 +12,58 @@ import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer';
 export class EarthComponent {
   @ViewChild('canvas') private canvasRef!: ElementRef;
 
-  //* Stage Properties
-
   @Input() public fieldOfView: number = 1;
 
   @Input('nearClipping') public nearClippingPane: number = 1;
 
   @Input('farClipping') public farClippingPane: number = 1000;
 
-  //? Scene properties
   private camera!: THREE.PerspectiveCamera;
 
   private controls!: OrbitControls;
-
-  private ambientLight!: THREE.AmbientLight;
-
-  private light1!: THREE.PointLight;
-
-  private light2!: THREE.PointLight;
-
-  private light3!: THREE.PointLight;
-
-  private light4!: THREE.PointLight;
-
-  private model: any;
-
-  private directionalLight!: THREE.DirectionalLight;
-
-  // ? Helper Properties (Private Properties);
 
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
   }
 
-  private loaderGLTF = new GLTFLoader();
-
   private renderer!: THREE.WebGLRenderer;
 
   private scene!: THREE.Scene;
 
-  /**
-   *Animate the model
-   *
-   * @private
-   * @memberof ModelComponent
-   */
-  private animateModel() {
-    if (this.model) {
-      this.model.rotation.z += 0.5;
+  ngAfterViewInit() {
+    this.createScene();
+    this.startRenderingLoop();
+    this.createControls();
+    this.createStars();
+  }
+
+  private createStars() {
+    const starGeometry = new THREE.BufferGeometry();
+    const starMaterial = new THREE.PointsMaterial({
+      color: 0xffffff,
+    });
+
+    const starVertices = [];
+    for (let i = 0; i < 10000; i++) {
+      const x = (Math.random() - 0.5) * 2000;
+      const y = (Math.random() - 0.5) * 2000;
+      const z = Math.random() * 2000;
+      starVertices.push(x, y, z);
     }
+    for (let i = 0; i < 10000; i++) {
+      const x = (Math.random() - 0.5) * 2000;
+      const y = (Math.random() - 0.5) * 2000;
+      const z = -Math.random() * 2000;
+      starVertices.push(x, y, z);
+    }
+
+    console.log(starVertices);
+    starGeometry.setAttribute(
+      'position',
+      new THREE.Float32BufferAttribute(starVertices, 3)
+    );
+    const stars = new THREE.Points(starGeometry, starMaterial);
+    this.scene.add(stars);
   }
 
   /**
@@ -119,6 +122,7 @@ export class EarthComponent {
     this.scene.add(sphere);
 
     this.camera.position.z = 10;
+    sphere.rotation.y += 0.01;
   }
 
   private getAspectRatio() {
@@ -144,18 +148,7 @@ export class EarthComponent {
     let component: EarthComponent = this;
     (function render() {
       component.renderer.render(component.scene, component.camera);
-      component.animateModel();
       requestAnimationFrame(render);
     })();
-  }
-
-  constructor() {}
-
-  ngOnInit(): void {}
-
-  ngAfterViewInit() {
-    this.createScene();
-    this.startRenderingLoop();
-    this.createControls();
   }
 }
